@@ -1,4 +1,4 @@
-function data = cailbirate_mpu9250_magnetometer(filename)
+function data = calibrate_mpu9250_magnetometer(filename)
     data = read_9250_output(filename);
     n = size(data, 1);
 %     f = figure;
