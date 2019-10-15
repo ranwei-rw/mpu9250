@@ -13,7 +13,7 @@ function p = plot_trajectory(q, acc, dt)
     p = zeros(n+1, 3);
     
     R = quaternion_to_rotation(q);
-    
+    v = [0, 0, 0];
     for i = 1:n
         %   get inverse rotation matrix
         r = inv(R(:, :, i));
@@ -26,7 +26,9 @@ function p = plot_trajectory(q, acc, dt)
         %   offset it by gravity
         true_acc = true_acc - [0, 0, 1];
         %   get position update for given time (millisecond)
-        p(i + 1, :) = p(i, :) + true_acc*dt(i)/1000;
+        t = dt(i)/1000;
+        p(i + 1, :) = p(i, :) + v*t + 0.5*true_acc*t^2;
+        v = v + true_acc*t;
     end
     figure;
     scatter3(p(:, 1), p(:, 2), p(:, 3));
