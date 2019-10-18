@@ -21,7 +21,7 @@ function data = calibrate_mpu9250_magnetometer(filename)
 %     save_figure_as_png(f, 'uncalibrated_AK8963.png');
     
     
-    m = data.mag - b;
+%    m = data.mag - b;
 %     f = figure;
 %     hold on
 %     axis equal
