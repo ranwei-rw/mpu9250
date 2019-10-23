@@ -1,6 +1,6 @@
 function data = read_9250_output(file)
     d = importdata(file, ',');
-    [~, c] = size(d);
+    [n, c] = size(d);
     if c == 9
         data.acc = d(:, 1:3);
         data.gyr = d(:, 4:6);
@@ -13,6 +13,16 @@ function data = read_9250_output(file)
         data.mag = d(:, 9:11);
         %   note: for this option and the below, magnet values are already
         %   being offsetted by the bias values.
+    elseif c == 19 % current output from kris code
+        data.delta_t = ones(1, n)*50;
+        data.temp = d(:, 1);
+        data.delta_t = d(:, 2);
+        data.acc = d(:, 3:5);
+        data.gyr = d(:, 6:8);
+        data.mag = d(:, 9:11);
+        data.q = d(:, 12:15);
+        data.rpy = d(:, 16:18);
+        data.rates = d(:, 19);
     else
         data.temp = d(:, 1);
         data.delta_t = d(:, 2);
