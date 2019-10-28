@@ -1,6 +1,8 @@
 function [p, h] = plot_trajectory(q, acc, dt)
 
-    %   define  rotation matrix from magnet north to true north
+    %   define  rotation matrix from magnet north to true north. Magnet
+    %   north is about 12 degree E of truth. Then we have to rotate the
+    %   computed north anticlockwise by that amount
     magnet_offset = 12.35/180*pi;
     
     R_nt = [cos(magnet_offset), sin(magnet_offset);
@@ -29,14 +31,15 @@ function [p, h] = plot_trajectory(q, acc, dt)
         true_acc = [true_n(1), true_n(2), am(3)];
         %   offset it by gravity
         true_acc = (true_acc - [0, 0, 1])*9.8; %    convert g to acc unit m/s^2
-        %   get position update for given time (millisecond)
+%          get position update for given time (millisecond)
+%         true_acc = 9.81*(acc(i, :)- [0, 0 , 1]);
         t = dt(i)/1000;
         p(i + 1, :) = p(i, :) + v*t + 0.5*true_acc*t^2;
-        quiver3(p(i, 1), p(i, 2), p(i, 3), v(1), v(2), v(3));
+        %quiver3(p(i, 1), p(i, 2), p(i, 3), v(1), v(2), v(3));
         v = v + true_acc*t;
     end
     
     
-%     scatter3(p(:, 1), p(:, 2), p(:, 3));
+    scatter3(p(:, 1), p(:, 2), p(:, 3));
     
 end
