@@ -22,22 +22,34 @@ function [p, h] = plot_trajectory(q, acc, dt)
     zlabel('Z');
     for i = 1:n
         %   get inverse rotation matrix
-        r = inv(R(:, :, i));
-        %   get estimated magnet acc (North, East, Down)
-        am = r*acc(i, :)';
-        %   apply magnet north to true north rotation
-        true_n = R_nt*am(1:2);
-        %   construct true acc vector
-        true_acc = [true_n(1), true_n(2), am(3)];
-        %   offset it by gravity
-        true_acc = (true_acc - [0, 0, 1])*9.8; %    convert g to acc unit m/s^2
+        %   trial 1
+%         r = inv(R(:, :, i));
+%         %   get estimated magnet acc (North, East, Down)
+%         am = acc(i, :)' - r*[0, 0, 1]';
+%         %   apply magnet north to true north rotation
+%         am = R(:, :, i)*am;
+%         true_n = R_nt*am(1:2);
+%         %   construct true acc vector
+%         true_acc = [true_n(1), true_n(2), am(3)]*9.8;
+%         %   offset it by gravity
+        %true_acc = (true_acc - [0, 0, 1])*9.8; %    convert g to acc unit m/s^2
 %          get position update for given time (millisecond)
-%         true_acc = 9.81*(acc(i, :)- [0, 0 , 1]);
+%         
+%         t = dt(i)/1000;
+%         p(i + 1, :) = p(i, :) + v*t + 0.5*true_acc*t^2;
+%         v = v + true_acc*t;
+                
+        %trial 2
+        r = R(:, :, i);
+        grav = r*[0, 0, 1]';
+        bodyacc = acc(i, :)' - grav;
+        glo_acc = inv(r)*bodyacc*9.8;
         t = dt(i)/1000;
-        p(i + 1, :) = p(i, :) + v*t + 0.5*true_acc*t^2;
-        %quiver3(p(i, 1), p(i, 2), p(i, 3), v(1), v(2), v(3));
-        v = v + true_acc*t;
+        p(i + 1, :) = p(i, :) + v*t + 0.5*glo_acc'*t^2;
+
+        v = v + glo_acc'*t;
     end
+    
     
     
     scatter3(p(:, 1), p(:, 2), p(:, 3));
