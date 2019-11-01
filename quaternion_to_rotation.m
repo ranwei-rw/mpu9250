@@ -20,5 +20,7 @@ function R = quaternion_to_rotation(quat)
         R(:, :, i) = [q0^2 + q1^2 - q2^2 - q3^2, 2*(q1*q2-q0*q3), 2*(q0*q2 + q1*q3);
                       2*(q1*q2 + q0*q3), q0^2 - q1^2 + q2^2 - q3^2, 2*(q2*q3 - q0*q1);
                       2*(q1*q3 - q0*q2), 2*(q0*q1 + q2*q3), q0^2 - q1^2 - q2^2 + q3^2];
+                  
+%                   R(:, :, i) = qGetR(q);
     end
 end

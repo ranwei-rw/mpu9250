@@ -1,7 +1,18 @@
 function data = read_9250_output(file)
     d = importdata(file, ',');
     [n, c] = size(d);
-    if c == 9
+    if c == 1
+        d = importdata(file, ' ');
+        [n, c] = size(d);
+        if c == 1
+            data = [];
+            return;
+        end
+    end
+    
+    if c == 3
+        data.bias = d;
+    elseif c == 9
         data.acc = d(:, 1:3);
         data.gyr = d(:, 4:6);
         data.mag = d(:, 7:9);
@@ -23,6 +34,7 @@ function data = read_9250_output(file)
         data.q = d(:, 12:15);
         data.rpy = d(:, 16:18);
         data.rates = d(:, 19);
+        %data.bias = [242.33 301.695 -426.095];
     else
         data.temp = d(:, 1);
         data.delta_t = d(:, 2);
@@ -33,8 +45,9 @@ function data = read_9250_output(file)
         data.q = d(:, 15:end);
         %   magnet values are already
         %   being offsetted by the bias values.
+        % data.bias = [242.33 301.695 -426.095];
     end
-    data.bias = [242.33 301.695 -426.095];
+    
     
 %     %   if the magnetometer data is not calibrated, show its distribution
 %     n = size(data.mag, 1);
