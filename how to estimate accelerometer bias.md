@@ -31,3 +31,19 @@ As the result, the element of gravity on xy plane is determined by sqrt(cos(thet
 since g = sqrt(gxy^2 + gz^2), gz = sqrt(1 - gxy^2) which can be used in the calibrationMPU9250 function. with will leads to better estimation of bias_z
 
 alternatively, bias_z can be estimated by (MA1(z) + MA2(z))/2 + 1 - gz.
+
+matlab cose: used
+file = 'accelerometer_bias_d1.txt';
+d1 = read_9250_output(file);
+file = 'accelerometer_bias_d2.txt';
+d2 = read_9250_output(file);
+a1 = mean(d1);
+a2 = mean(d2.bias);
+biasx = (a1(1)+a2(1))/2;
+biasy = (a1(2) + a2(2))/2;
+costheta = a2(1) - biasx
+sintheta = a2(2) - biasy
+thetav = costheta^2 + sintheta^2
+zvalue = sqrt(1 - thetav)
+biasz = (a1(3) + a2(3))/2 + (1-zvalue);
+bias =[biasx, biasx, biasz]
