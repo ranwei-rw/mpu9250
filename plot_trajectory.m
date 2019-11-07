@@ -24,11 +24,11 @@ function [p, h] = plot_trajectory(q, acc, dt)
         %   get inverse rotation matrix
         %   get estimated magnet acc (North, East, Down)
 %         am = acc(i, :)' - R(:, :, i)*[0, 0, 1]';
-        am = acc(i, :)' - qRotatePoint([0, 0, 1]', q(i, :)');
+        am = acc(i, :)' - qRotatePoint([0, 0, 0.99945580939097]', q(i, :)');
         %   apply magnet north to true north rotation
-        am = R(:, :, i)*am;
+        am = inv(R(:, :, i))*am;
         true_n = R_nt*am(1:2);
-        %   construct true acc vector
+%         %   construct true acc vector
         true_acc = [true_n(1), true_n(2), am(3)]*9.8;
         %   offset it by gravity
         
@@ -40,7 +40,7 @@ function [p, h] = plot_trajectory(q, acc, dt)
                 
     end
     
-    
+    %quiver3(0, 0, 0, x, y, z)
     
     scatter3(p(:, 1), p(:, 2), p(:, 3));
     
