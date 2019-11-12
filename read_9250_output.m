@@ -1,5 +1,9 @@
 function data = read_9250_output(file)
     d = importdata(file, ',');
+    if isstruct(d)
+        d = d.data;
+    end
+    
     [n, c] = size(d);
     if c == 1
         d = importdata(file, ' ');

@@ -13,11 +13,7 @@
 
 
 
-function [fh, data] = read_and_display_serial(pn, starting_sign)
-  
-    if ~exist('starting_sign', 'var')
-        starting_sign = 'qua';
-    end
+function [fh, data] = read_and_display_serial(pn)
     
     
     format = "%f";
@@ -47,18 +43,25 @@ function [fh, data] = read_and_display_serial(pn, starting_sign)
     while k < 5000
         s = fscanf(port, format);
         pause(0.01);
+        if ~isstr(s)
+            continue;
+        end
         d = split(s, ', ');
         if numel(d) < 5
             continue;
         end
-        acc = d{3};
-        acc = acc(5:end);
-        acc = split(acc, ',');
-        acc = str2double(acc);
-        ges = d{5};
-        ges = ges(5:end);
-        ges = split(ges, ',');
-        ges = str2double(ges);
+        
+        %   get text scanned in
+        data = str2num(d);
+        temp = data(1);
+        time = data(2);
+        acc = data(3:5);
+        gyr = data(6:8);
+        mag = data(9:11);
+        q = data(12:15);
+        ypr = data(16:18);
+        fre = data(19);
+        
         if k < 10
             %   get estimation for g values
             dac(:, k+1) = acc;
