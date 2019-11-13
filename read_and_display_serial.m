@@ -10,9 +10,6 @@
 %         delete(instrfind);
 
 
-
-
-
 function [fh, data] = read_and_display_serial(pn)
     
     
@@ -46,13 +43,17 @@ function [fh, data] = read_and_display_serial(pn)
         if ~isstr(s)
             continue;
         end
+        
+        if startsWith(s, '#, ')
+            s = s(4:end-2); %   to remove the return 
+        end
         d = split(s, ', ');
         if numel(d) < 5
             continue;
         end
         
         %   get text scanned in
-        data = str2num(d);
+        data = str2double(d);
         temp = data(1);
         time = data(2);
         acc = data(3:5);
