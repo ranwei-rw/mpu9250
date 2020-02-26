@@ -1,7 +1,7 @@
 function bias = estimate_accel_bias(data_0, data_180)
 
-    measured_theta = mean(data_0.bias);
-    measured_theta_pi = mean(data_180.bias);
+    measured_theta = mean(data_0.acc);
+    measured_theta_pi = mean(data_180.acc);
     m0_x = measured_theta(1);
     m0_y = measured_theta(2);
     m0_z = measured_theta(3);

@@ -1,4 +1,13 @@
-function data = read_9250_output(file)
+function [data, fh] = read_9250_output(file, show_figure, new_handle)
+
+    if ~exist('new_handle', 'var')
+        new_handle = 1;
+    end
+    
+    if ~exist('show_figure', 'var')
+        show_figure = 1;
+    end
+
     d = importdata(file, ',');
     if isstruct(d)
         d = d.data;
@@ -28,6 +37,21 @@ function data = read_9250_output(file)
         data.mag = d(:, 9:11);
         %   note: for this option and the below, magnet values are already
         %   being offsetted by the bias values.
+    elseif c == 18
+        %   data from current corycaeus master MPU9250 output
+        data.order_num = d(:, 1);
+        data.year = d(:, 2);
+        data.month = d(:, 3);
+        data.day = d(:, 4);
+        data.hour = d(:, 5);
+        data.minute = d(:, 6);
+        data.second = d(:, 7);
+        data.delta_t = d(:, 8);
+        data.temp = d(:, 9);
+        data.acc = d(:, 10:12);
+        data.gyr = d(:, 13:15);
+        data.mag = d(:, 16:18);
+        data.bias = [58.564026 -8.0123595 -96.628601];
     elseif c == 19 % current output from kris code
         % process to remove NAN values. probably needs to go through all 19
         % elements
@@ -62,7 +86,7 @@ function data = read_9250_output(file)
         data.q = d(:, 12:15);
         data.rpy = d(:, 16:18);
         data.rates = d(:, 19);
-        %data.bias = [242.33 301.695 -426.095];
+        data.bias = [58.564026 -8.0123595 -96.628601];
     else
         data.temp = d(:, 1);
         data.delta_t = d(:, 2);
@@ -73,14 +97,29 @@ function data = read_9250_output(file)
         data.q = d(:, 15:end);
         %   magnet values are already
         %   being offsetted by the bias values.
-        % data.bias = [242.33 301.695 -426.095];
+        data.bias = [58.564026 -8.0123595 -96.628601];
     end
     
     
     
 %     %   if the magnetometer data is not calibrated, show its distribution
-%     n = size(data.mag, 1);
-%     mag = data.mag - repmat(data.bias, [n, 1]);
-%     fh = figure;
-%     scatter3(mag(:, 1), mag(:, 2), mag(:, 3));
+     %was data.bias = [242.33 301.695 -426.095];
+    if new_handle
+        fh = figure;
+    else
+        fh = gcf;
+    end
+    
+    if show_figure
+       
+%        n = size(data.mag, 1);
+%         mag = data.mag;
+%         %   choose to show data with or without bias info removed
+%         %     %   with bias
+%         %     mag = data.mag + repmat(data.bias, [n, 1]);
+%         %   with bias removed
+%         scatter3(mag(:, 1), mag(:, 2), mag(:, 3));
+
+        scatter3(data.acc(:, 1), data.acc(:, 2), data.acc(:, 3));
+    end
 end
